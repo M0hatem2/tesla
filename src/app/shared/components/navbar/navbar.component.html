@@ -1,0 +1,176 @@
+<nav class="bg-gray-900 text-white sticky top-0 z-50 shadow-lg">
+  <div class="container mx-auto px-4">
+    <div class="flex items-center justify-between h-16">
+      <!-- Logo -->
+      <div class="flex items-center">
+        <a routerLink="/" class="text-2xl font-bold text-white hover:text-accent transition">
+          🚗 CarHub
+        </a>
+      </div>
+
+      <!-- Desktop Navigation -->
+      <div class="hidden md:flex items-center space-x-6">
+        <a
+          routerLink="/"
+          routerLinkActive="text-accent"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="hover:text-accent transition"
+          >Home</a
+        >
+        <a routerLink="/cars" routerLinkActive="text-accent" class="hover:text-accent transition"
+          >Cars</a
+        >
+        <a
+          routerLink="/dealerships"
+          routerLinkActive="text-accent"
+          class="hover:text-accent transition"
+          >Dealerships</a
+        >
+        <a routerLink="/blog" routerLinkActive="text-accent" class="hover:text-accent transition"
+          >Blog</a
+        >
+
+        <!-- More Dropdown -->
+        <div class="relative group">
+          <button class="hover:text-accent transition flex items-center">
+            More
+            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+          <div
+            class="absolute left-0 mt-2 w-48 bg-white text-gray-800 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all"
+          >
+            <a routerLink="/insurance" class="block px-4 py-2 hover:bg-gray-100 rounded-t-lg"
+              >Insurance</a
+            >
+            <a routerLink="/maintenance" class="block px-4 py-2 hover:bg-gray-100">Maintenance</a>
+            <a routerLink="/upcoming-models" class="block px-4 py-2 hover:bg-gray-100"
+              >Upcoming Models</a
+            >
+            <a routerLink="/faq" class="block px-4 py-2 hover:bg-gray-100 rounded-b-lg">FAQ</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Side Actions -->
+      <div class="hidden md:flex items-center space-x-4">
+        <a routerLink="/loan-calculator" class="btn-secondary text-sm"> 💰 Loan Calculator </a>
+
+        <!-- Compare Badge -->
+        <a routerLink="/compare" class="relative">
+          <button class="p-2 hover:bg-gray-800 rounded-lg transition">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+              />
+            </svg>
+            @if (compareCount > 0) {
+              <span
+                class="absolute -top-1 -right-1 bg-accent text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"
+              >
+                {{ compareCount }}
+              </span>
+            }
+          </button>
+        </a>
+
+        <!-- User Menu -->
+        @if (currentUser) {
+          <div class="relative">
+            <button
+              (click)="toggleUserMenu()"
+              class="flex items-center space-x-2 p-2 hover:bg-gray-800 rounded-lg transition"
+            >
+              <div
+                class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-sm font-semibold"
+              >
+                {{ getUserInitials() }}
+              </div>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+
+            @if (isUserMenuOpen) {
+              <div class="absolute right-0 mt-2 w-48 bg-white text-gray-800 rounded-lg shadow-lg">
+                <div class="px-4 py-3 border-b">
+                  <p class="font-semibold">{{ currentUser.fullName }}</p>
+                  <p class="text-sm text-gray-500">{{ currentUser.email }}</p>
+                </div>
+
+                @if (currentUser.role === 'admin') {
+                  <a routerLink="/admin" class="block px-4 py-2 hover:bg-gray-100">
+                    🛡️ Admin Panel
+                  </a>
+                } @else if (currentUser.role === 'dealer') {
+                  <a routerLink="/dealer" class="block px-4 py-2 hover:bg-gray-100">
+                    🏢 Dealer Panel
+                  </a>
+                } @else {
+                  <a routerLink="/dashboard" class="block px-4 py-2 hover:bg-gray-100">
+                    📊 Dashboard
+                  </a>
+                }
+
+                <button
+                  (click)="logout()"
+                  class="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600 rounded-b-lg"
+                >
+                  🚪 Logout
+                </button>
+              </div>
+            }
+          </div>
+        } @else {
+          <a routerLink="/login" class="btn-secondary text-sm">Login</a>
+          <a routerLink="/register" class="btn-primary text-sm">Register</a>
+        }
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button (click)="toggleMenu()" class="md:hidden p-2">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    @if (isMenuOpen) {
+      <div class="md:hidden pb-4">
+        <a routerLink="/" class="block py-2 hover:text-accent">Home</a>
+        <a routerLink="/cars" class="block py-2 hover:text-accent">Cars</a>
+        <a routerLink="/dealerships" class="block py-2 hover:text-accent">Dealerships</a>
+        <a routerLink="/blog" class="block py-2 hover:text-accent">Blog</a>
+        <a routerLink="/insurance" class="block py-2 hover:text-accent">Insurance</a>
+        <a routerLink="/faq" class="block py-2 hover:text-accent">FAQ</a>
+
+        @if (!currentUser) {
+          <div class="mt-4 space-y-2">
+            <a routerLink="/login" class="block btn-secondary text-center">Login</a>
+            <a routerLink="/register" class="block btn-primary text-center">Register</a>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</nav>

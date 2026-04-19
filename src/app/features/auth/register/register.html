@@ -1,0 +1,205 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
+  <div class="max-w-2xl w-full">
+    <div class="text-center mb-8">
+      <h2 class="text-3xl font-bold text-gray-900">Create Account</h2>
+      <p class="mt-2 text-gray-600">Join CarHub and find your dream car</p>
+    </div>
+
+    <div class="card">
+      <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Full Name -->
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Full Name *</label>
+            <input
+              type="text"
+              formControlName="fullName"
+              class="input-field"
+              placeholder="Enter your full name"
+            />
+            @if (fullName?.invalid && fullName?.touched) {
+              <p class="text-red-600 text-sm mt-1">
+                @if (fullName?.errors?.['required']) {
+                  Full name is required
+                }
+                @if (fullName?.errors?.['minlength']) {
+                  Name must be at least 3 characters
+                }
+              </p>
+            }
+          </div>
+
+          <!-- Email -->
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Email Address *</label>
+            <input
+              type="email"
+              formControlName="email"
+              class="input-field"
+              placeholder="Enter your email"
+            />
+            @if (email?.invalid && email?.touched) {
+              <p class="text-red-600 text-sm mt-1">
+                @if (email?.errors?.['required']) {
+                  Email is required
+                }
+                @if (email?.errors?.['email']) {
+                  Please enter a valid email
+                }
+              </p>
+            }
+          </div>
+
+          <!-- Phone -->
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Phone Number *</label>
+            <input
+              type="tel"
+              formControlName="phone"
+              class="input-field"
+              placeholder="01XXXXXXXXX"
+            />
+            @if (phone?.invalid && phone?.touched) {
+              <p class="text-red-600 text-sm mt-1">
+                @if (phone?.errors?.['required']) {
+                  Phone is required
+                }
+                @if (phone?.errors?.['pattern']) {
+                  Enter valid Egyptian phone (01XXXXXXXXX)
+                }
+              </p>
+            }
+          </div>
+
+          <!-- City -->
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">City</label>
+            <select formControlName="city" class="input-field">
+              <option value="">Select City</option>
+              <option value="Cairo">Cairo</option>
+              <option value="Alexandria">Alexandria</option>
+              <option value="Giza">Giza</option>
+              <option value="Sharm El-Sheikh">Sharm El-Sheikh</option>
+              <option value="Hurghada">Hurghada</option>
+            </select>
+          </div>
+
+          <!-- Password -->
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Password *</label>
+            <input
+              type="password"
+              formControlName="password"
+              class="input-field"
+              placeholder="Enter password"
+            />
+            @if (password?.invalid && password?.touched) {
+              <p class="text-red-600 text-sm mt-1">
+                @if (password?.errors?.['required']) {
+                  Password is required
+                }
+                @if (password?.errors?.['minlength']) {
+                  Password must be at least 8 characters
+                }
+              </p>
+            }
+          </div>
+
+          <!-- Confirm Password -->
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Confirm Password *</label>
+            <input
+              type="password"
+              formControlName="confirmPassword"
+              class="input-field"
+              placeholder="Confirm password"
+            />
+            @if (confirmPassword?.invalid && confirmPassword?.touched) {
+              <p class="text-red-600 text-sm mt-1">Please confirm your password</p>
+            }
+          </div>
+        </div>
+
+        <!-- Role Selection -->
+        <div class="mt-6">
+          <label class="block text-sm font-semibold text-gray-700 mb-3">I am a: *</label>
+          <div class="flex gap-4">
+            <label class="flex items-center cursor-pointer">
+              <input type="radio" formControlName="role" value="buyer" class="mr-2" />
+              <span class="text-gray-700">🚗 Car Buyer</span>
+            </label>
+            <label class="flex items-center cursor-pointer">
+              <input type="radio" formControlName="role" value="dealer" class="mr-2" />
+              <span class="text-gray-700">🏢 Car Dealer</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Dealer Fields (Conditional) -->
+        @if (role?.value === 'dealer') {
+          <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+            <h3 class="font-semibold text-gray-800 mb-4">Dealership Information</h3>
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2"
+                  >Dealership Name *</label
+                >
+                <input
+                  type="text"
+                  formControlName="dealershipName"
+                  class="input-field"
+                  placeholder="Enter dealership name"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2"
+                  >Dealership Address *</label
+                >
+                <input
+                  type="text"
+                  formControlName="dealershipAddress"
+                  class="input-field"
+                  placeholder="Enter dealership address"
+                />
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Terms & Conditions -->
+        <div class="mt-6">
+          <label class="flex items-start cursor-pointer">
+            <input type="checkbox" formControlName="terms" class="mt-1 mr-2" />
+            <span class="text-sm text-gray-700">
+              I agree to the
+              <a href="#" class="text-primary hover:underline">Terms & Conditions</a> and
+              <a href="#" class="text-primary hover:underline">Privacy Policy</a>
+            </span>
+          </label>
+          @if (terms?.invalid && terms?.touched) {
+            <p class="text-red-600 text-sm mt-1">You must accept the terms</p>
+          }
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" [disabled]="isLoading" class="btn-primary w-full mt-6">
+          @if (isLoading) {
+            <span>Creating Account...</span>
+          } @else {
+            <span>Create Account</span>
+          }
+        </button>
+      </form>
+
+      <!-- Login Link -->
+      <div class="mt-6 text-center">
+        <p class="text-sm text-gray-600">
+          Already have an account?
+          <a routerLink="/login" class="text-primary font-semibold hover:text-primary-dark">
+            Sign in here
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

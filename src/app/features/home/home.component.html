@@ -1,0 +1,174 @@
+<!-- Hero Section -->
+<section class="relative bg-gradient-to-r from-primary to-primary-dark text-white py-20">
+  <div class="container mx-auto px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <h1 class="text-5xl font-bold mb-4">Find Your Perfect Car</h1>
+      <p class="text-xl mb-8">Browse thousands of new and used cars from top dealerships</p>
+
+      <div class="flex flex-col md:flex-row gap-4 justify-center">
+        <a routerLink="/cars" class="btn-accent text-lg px-8 py-3"> Browse All Cars </a>
+        <a
+          routerLink="/search"
+          class="btn-secondary text-lg px-8 py-3 bg-white text-primary hover:bg-gray-100"
+        >
+          Advanced Search
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Bar -->
+<section class="bg-white py-12 shadow-md">
+  <div class="container mx-auto px-4">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+      @for (stat of stats; track stat.label) {
+        <div>
+          <div class="text-4xl font-bold text-primary mb-2">{{ stat.value }}</div>
+          <div class="text-gray-600">{{ stat.label }}</div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Featured Cars -->
+<section class="py-16 bg-gray-50">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-12">
+      <h2 class="section-title">Featured Cars</h2>
+      <p class="section-sub">Hand-picked vehicles for you</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      @for (car of featuredCars; track car.id) {
+        <div class="card hover:scale-105 transition-transform">
+          <img
+            [src]="car.images[0]"
+            [alt]="car.make + ' ' + car.model"
+            class="w-full h-48 object-cover rounded-lg mb-4"
+          />
+
+          <div class="flex justify-between items-start mb-2">
+            <h3 class="text-xl font-bold">{{ car.make }} {{ car.model }}</h3>
+            <span class="badge-primary">{{ car.year }}</span>
+          </div>
+
+          <p class="text-2xl font-bold text-primary mb-3">{{ car.price | currencyFormat }}</p>
+
+          <div class="flex gap-4 text-sm text-gray-600 mb-4">
+            <span>{{ car.mileage | kmFormat }}</span>
+            <span>{{ car.fuelType }}</span>
+            <span>{{ car.transmission }}</span>
+          </div>
+
+          <div class="flex gap-2">
+            <a [routerLink]="['/cars', car.id]" class="btn-primary flex-1 text-center text-sm">
+              View Details
+            </a>
+            <a [routerLink]="['/test-drive', car.id]" class="btn-accent flex-1 text-center text-sm">
+              Book Test Drive
+            </a>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="text-center mt-8">
+      <a routerLink="/cars" class="btn-primary text-lg">View All Cars</a>
+    </div>
+  </div>
+</section>
+
+<!-- Browse by Brand -->
+<section class="py-16">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-12">
+      <h2 class="section-title">Shop by Brand</h2>
+      <p class="section-sub">Explore cars from your favorite manufacturers</p>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      @for (brand of brands; track brand.name) {
+        <a
+          [routerLink]="['/cars']"
+          [queryParams]="{ brand: brand.name }"
+          class="card text-center hover:shadow-xl transition-all cursor-pointer"
+        >
+          <div class="text-5xl mb-3">{{ brand.logo }}</div>
+          <div class="font-semibold">{{ brand.name }}</div>
+        </a>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Why Choose Us -->
+<section class="py-16 bg-gray-50">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-12">
+      <h2 class="section-title">Why Choose CarHub?</h2>
+      <p class="section-sub">Your trusted partner in finding the perfect car</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      @for (feature of features; track feature.title) {
+        <div class="card text-center">
+          <div class="text-5xl mb-4">{{ feature.icon }}</div>
+          <h3 class="text-xl font-bold mb-2">{{ feature.title }}</h3>
+          <p class="text-gray-600">{{ feature.description }}</p>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section class="py-16">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-12">
+      <h2 class="section-title">What Our Customers Say</h2>
+      <p class="section-sub">Real reviews from real customers</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      @for (testimonial of testimonials; track testimonial.name) {
+        <div class="card">
+          <div class="flex items-center mb-4">
+            <img
+              [src]="testimonial.avatar"
+              [alt]="testimonial.name"
+              class="w-12 h-12 rounded-full mr-3"
+            />
+            <div>
+              <div class="font-semibold">{{ testimonial.name }}</div>
+              <div class="flex text-yellow-500">
+                @for (star of getStarArray(testimonial.rating); track $index) {
+                  <span>★</span>
+                }
+              </div>
+            </div>
+          </div>
+          <p class="text-gray-600">{{ testimonial.text }}</p>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-16 bg-primary text-white">
+  <div class="container mx-auto px-4 text-center">
+    <h2 class="text-4xl font-bold mb-4">Ready to Find Your Dream Car?</h2>
+    <p class="text-xl mb-8">Join thousands of happy customers who found their perfect vehicle</p>
+    <div class="flex gap-4 justify-center">
+      <a routerLink="/register" class="btn-accent text-lg px-8 py-3"> Get Started </a>
+      <a
+        routerLink="/cars"
+        class="btn-secondary text-lg px-8 py-3 bg-white text-primary hover:bg-gray-100"
+      >
+        Browse Cars
+      </a>
+    </div>
+  </div>
+</section>

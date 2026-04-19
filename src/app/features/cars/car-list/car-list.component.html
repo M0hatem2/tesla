@@ -1,0 +1,288 @@
+<div class="bg-gray-50 min-h-screen py-8">
+  <div class="container mx-auto px-4">
+    <div class="flex flex-col lg:flex-row gap-6">
+      <!-- Sidebar Filters -->
+      <aside class="lg:w-1/4">
+        <div class="card sticky top-20">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold">Filters</h3>
+            <button (click)="resetFilters()" class="text-sm text-primary hover:underline">
+              Reset All
+            </button>
+          </div>
+
+          <!-- Make/Brand -->
+          <div class="mb-6">
+            <h4 class="font-semibold mb-3">Make</h4>
+            <div class="space-y-2">
+              @for (make of makes; track make) {
+                <label class="flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    [checked]="filters.make?.includes(make)"
+                    (change)="toggleMake(make)"
+                    class="mr-2"
+                  />
+                  <span class="text-sm">{{ make }}</span>
+                </label>
+              }
+            </div>
+          </div>
+
+          <!-- Body Type -->
+          <div class="mb-6">
+            <h4 class="font-semibold mb-3">Body Type</h4>
+            <div class="space-y-2">
+              @for (type of bodyTypes; track type) {
+                <label class="flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    [checked]="filters.bodyType?.includes(type)"
+                    (change)="toggleBodyType(type)"
+                    class="mr-2"
+                  />
+                  <span class="text-sm capitalize">{{ type }}</span>
+                </label>
+              }
+            </div>
+          </div>
+
+          <!-- Price Range -->
+          <div class="mb-6">
+            <h4 class="font-semibold mb-3">Price Range</h4>
+            <div class="space-y-2">
+              <input
+                type="range"
+                [(ngModel)]="filters.priceMin"
+                min="5000"
+                max="150000"
+                step="5000"
+                (change)="applyFilters()"
+                class="w-full"
+              />
+              <div class="flex justify-between text-sm text-gray-600">
+                <span>{{ filters.priceMin | currencyFormat }}</span>
+                <span>{{ filters.priceMax | currencyFormat }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Fuel Type -->
+          <div class="mb-6">
+            <h4 class="font-semibold mb-3">Fuel Type</h4>
+            <div class="space-y-2">
+              @for (fuel of fuelTypes; track fuel) {
+                <label class="flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    [checked]="filters.fuelType?.includes(fuel)"
+                    (change)="toggleFuelType(fuel)"
+                    class="mr-2"
+                  />
+                  <span class="text-sm capitalize">{{ fuel }}</span>
+                </label>
+              }
+            </div>
+          </div>
+
+          <!-- Transmission -->
+          <div class="mb-6">
+            <h4 class="font-semibold mb-3">Transmission</h4>
+            <select
+              [(ngModel)]="filters.transmission"
+              (change)="applyFilters()"
+              class="input-field"
+            >
+              <option [value]="undefined">Any</option>
+              <option value="automatic">Automatic</option>
+              <option value="manual">Manual</option>
+            </select>
+          </div>
+
+          <!-- Condition -->
+          <div class="mb-6">
+            <h4 class="font-semibold mb-3">Condition</h4>
+            <select [(ngModel)]="filters.condition" (change)="applyFilters()" class="input-field">
+              <option [value]="undefined">Any</option>
+              <option value="new">New</option>
+              <option value="used">Used</option>
+              <option value="certified">Certified Pre-Owned</option>
+            </select>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="lg:w-3/4">
+        <!-- Top Bar -->
+        <div class="card mb-6">
+          <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="text-gray-600">
+              Showing {{ displayedCars.length }} of {{ filteredCars.length }} results
+            </div>
+
+            <div class="flex gap-4 items-center">
+              <!-- Sort -->
+              <select [(ngModel)]="sortBy" (change)="sortCars()" class="input-field">
+                <option value="newest">Newest First</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="rating">Highest Rated</option>
+              </select>
+
+              <!-- View Toggle -->
+              <div class="flex gap-2">
+                <button
+                  (click)="viewMode = 'grid'"
+                  [class.bg-primary]="viewMode === 'grid'"
+                  [class.text-white]="viewMode === 'grid'"
+                  class="p-2 border rounded hover:bg-gray-100"
+                >
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                      d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+                    />
+                  </svg>
+                </button>
+                <button
+                  (click)="viewMode = 'list'"
+                  [class.bg-primary]="viewMode === 'list'"
+                  [class.text-white]="viewMode === 'list'"
+                  class="p-2 border rounded hover:bg-gray-100"
+                >
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                      fill-rule="evenodd"
+                      d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Car Grid/List -->
+        @if (displayedCars.length === 0) {
+          <div class="card text-center py-12">
+            <div class="text-6xl mb-4">🚗</div>
+            <h3 class="text-2xl font-bold mb-2">No cars found</h3>
+            <p class="text-gray-600 mb-4">Try adjusting your filters</p>
+            <button (click)="resetFilters()" class="btn-primary">Reset Filters</button>
+          </div>
+        } @else {
+          <div
+            [class]="
+              viewMode === 'grid'
+                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+                : 'space-y-4'
+            "
+          >
+            @for (car of displayedCars; track car.id) {
+              <div class="card hover:shadow-xl transition-all">
+                <div class="relative">
+                  <img
+                    [src]="car.images[0]"
+                    [alt]="car.make + ' ' + car.model"
+                    class="w-full h-48 object-cover rounded-lg mb-4"
+                  />
+
+                  <!-- Favorite Button -->
+                  <button
+                    (click)="toggleFavorite(car.id)"
+                    class="absolute top-2 right-2 bg-white rounded-full p-2 shadow-lg hover:scale-110 transition"
+                  >
+                    <svg
+                      class="w-6 h-6"
+                      [class.text-red-500]="isFavorite(car.id)"
+                      [class.fill-current]="isFavorite(car.id)"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                      />
+                    </svg>
+                  </button>
+
+                  <!-- Condition Badge -->
+                  <span class="absolute top-2 left-2 badge-primary">{{ car.condition }}</span>
+                </div>
+
+                <div class="flex justify-between items-start mb-2">
+                  <h3 class="text-xl font-bold">{{ car.make }} {{ car.model }}</h3>
+                  <span class="badge-success">{{ car.year }}</span>
+                </div>
+
+                <p class="text-2xl font-bold text-primary mb-3">{{ car.price | currencyFormat }}</p>
+
+                <div class="flex gap-3 text-sm text-gray-600 mb-3">
+                  <span>📏 {{ car.mileage | kmFormat }}</span>
+                  <span>⛽ {{ car.fuelType }}</span>
+                  <span>⚙️ {{ car.transmission }}</span>
+                </div>
+
+                <div class="flex items-center gap-2 mb-4">
+                  <div class="flex text-yellow-500">
+                    @for (star of getStarArray(car.rating); track $index) {
+                      <span>★</span>
+                    }
+                  </div>
+                  <span class="text-sm text-gray-600">({{ car.reviewCount }} reviews)</span>
+                </div>
+
+                <div class="flex gap-2">
+                  <a
+                    [routerLink]="['/cars', car.id]"
+                    class="btn-primary flex-1 text-center text-sm"
+                  >
+                    View Details
+                  </a>
+                  <button (click)="addToCompare(car)" class="btn-secondary text-sm px-3">
+                    + Compare
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- Pagination -->
+          @if (totalPages > 1) {
+            <div class="flex justify-center gap-2 mt-8">
+              <button
+                (click)="changePage(currentPage - 1)"
+                [disabled]="currentPage === 1"
+                class="btn-secondary disabled:opacity-50"
+              >
+                Previous
+              </button>
+
+              @for (page of [].constructor(totalPages); track $index) {
+                <button
+                  (click)="changePage($index + 1)"
+                  [class.btn-primary]="currentPage === $index + 1"
+                  [class.btn-secondary]="currentPage !== $index + 1"
+                >
+                  {{ $index + 1 }}
+                </button>
+              }
+
+              <button
+                (click)="changePage(currentPage + 1)"
+                [disabled]="currentPage === totalPages"
+                class="btn-secondary disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
+          }
+        }
+      </main>
+    </div>
+  </div>
+</div>
